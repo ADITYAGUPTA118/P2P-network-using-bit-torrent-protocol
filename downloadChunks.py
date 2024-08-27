@@ -197,30 +197,31 @@ def download_chunks(file_key, peer_to_chunks):
     for peer_id, chunks in peer_to_chunks.items():
         ip, port = peer_id.split(":")
         print(f":: {ip} {port}")
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.connect((ip, int(port)))
-                print(f"{peer_id} has the file key. Requesting chunks...")
+        
+        for i in chunks:
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.connect((ip, int(port)))
+                    print(f"{peer_id} has the file key. Requesting chunk {i}...")
 
-                for i in chunks:
                     s.sendall(f"GET_CHUNK:{file_key}:{i}".encode())
                     chunk = s.recv(4096)
+                    
                     if chunk:
                         file_chunks[i] = chunk
                         print(f"Received chunk {i} from {peer_id}")
                     else:
                         print(f"Failed to receive chunk {i} from {peer_id}")
-                
-        except socket.error as e:
-            print(f"Failed to connect to peer {peer_id}: {e}")
+                    
+            except socket.error as e:
+                print(f"Failed to connect to peer {peer_id}: {e}")
 
     # Reassemble the file
-    with open(f"{file_key}_downloaded", "wb") as f:
+    with open(f"{file_key}_downloaded.bin", "wb") as f:
         for i in sorted(file_chunks.keys()):
             f.write(file_chunks[i])
 
     print(f"File {file_key} downloaded successfully.")
-
 
 def process_peers_data(peers_data):
     """Convert peers_data into a list of Peer objects."""

@@ -327,7 +327,7 @@ def main():
         threading.Thread(target=start_peer_server, args=(peer['ip'], peer['port'])).start()
 
     # Divide the file into chunks
-    file_path = "statement.pdf"  # Replace with the actual file path
+    file_path = "large_random_file.bin"  # Replace with the actual file path
     chunks = divide_file_into_chunks(file_path)
     
     # Load DHT from server data

@@ -51,6 +51,7 @@
 import socket
 import threading
 import hashlib
+import os
 
 class Peer:
     def __init__(self, name, ip, port):
@@ -65,7 +66,7 @@ class Peer:
     def __str__(self):
         return f"Peer(name={self.name}, peer_id={self.peer_id}, files={self.files})"
 
-    def generate_hash(file_key, chunk_number):
+    def generate_hash(self,file_key, chunk_number):
         """Generate a hash value based on the file_key and chunk_number."""
         data = f"{file_key}_{chunk_number}".encode()
         return hashlib.sha256(data).hexdigest()
